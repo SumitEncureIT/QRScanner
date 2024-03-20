@@ -74,13 +74,14 @@ public class MainActivity extends AppCompatActivity {
                 }else if (mobileNo.getText().toString().length()<10){
                     mobileNo.requestFocus();
                     mobileNo.setError("Enter valid mobile no");
-                }else if (email.getText().toString().equalsIgnoreCase("")){
-                    email.requestFocus();
-                    email.setError("Enter email id");
-                }else if (!email.getText().toString().matches(emailPattern)){
-                    email.requestFocus();
-                    email.setError("Enter your valid email id");
                 }
+//                else if (email.getText().toString().equalsIgnoreCase("")){
+//                    email.requestFocus();
+//                    email.setError("Enter email id");
+//                }else if (!email.getText().toString().matches(emailPattern)){
+//                    email.requestFocus();
+//                    email.setError("Enter your valid email id");
+//                }
                 else {
                     getRegister(fullName.getText().toString(),mobileNo.getText().toString(),email.getText().toString());
                 }

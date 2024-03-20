@@ -80,7 +80,7 @@
                 android:layout_height="55dp"
                 android:layout_gravity="center"
                 android:backgroundTint="@color/red"
-                android:text="Register"
+                android:text="Reject"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="20dp"
