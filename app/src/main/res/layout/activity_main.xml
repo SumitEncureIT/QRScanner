@@ -8,23 +8,29 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp">
-            <ImageView
-                android:id="@+id/qr_scan"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/qr_image"
+
+            <Button
+                android:id="@+id/btn_sync"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/purple_500"
+                android:text="Sync"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14dp"
+                android:textStyle="bold"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="10dp"/>
             <Button
                 android:id="@+id/btn_add_manually"
-                android:layout_toLeftOf="@+id/qr_scan"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -34,33 +40,32 @@
                 android:textColor="@color/white"
                 android:textSize="14dp"
                 android:textStyle="bold"
+               android:layout_toLeftOf="@+id/btn_sync"
                 android:layout_marginRight="10dp"/>
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:padding="10dp"
-            android:layout_marginLeft="50dp">
+            android:padding="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Invited person mobile No."
                 android:textColor="@color/black"
                 android:textSize="20dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textAlignment="center"/>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="15dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="This is QR scan mobile no. for getting person details."
                 android:textColor="@color/black"
@@ -68,41 +73,64 @@
                 android:textAlignment="center"/>
         </LinearLayout>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:backgroundTint="@color/white"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="10dp"
-            android:layout_gravity="center">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="30dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/et_layout"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="5dp"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center">
 
-                    <EditText
-                        android:id="@+id/qr_value"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:background="@null"
-                        android:hint="QR Scan Data"
-                        android:textColor="@color/black"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"
-                        android:textSize="15dp"/>
-                </LinearLayout>
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp">
+
+                        <EditText
+                            android:id="@+id/qr_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:hint="QR Scan Data"
+                            android:textColor="@color/black"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:textSize="15dp"/>
+                    </LinearLayout>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/qr_scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:elevation="6dp"
+                app:fabSize="normal"
+                android:src="@drawable/qr_image"
+                android:layout_toRightOf="@+id/et_layout"
+                app:maxImageSize="30dp"
+                app:backgroundTint="@color/white"/>
+        </RelativeLayout>
+
 
 
         <Button
