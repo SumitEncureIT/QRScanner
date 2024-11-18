@@ -17,7 +17,6 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +26,7 @@ import com.irpinnovative.qrscanner.Listener.AppListener;
 import com.irpinnovative.qrscanner.Models.GetAllUserData;
 import com.irpinnovative.qrscanner.Models.GetAllUserResponse;
 import com.irpinnovative.qrscanner.Models.QRScanResponse;
-import com.irpinnovative.qrscanner.Models.QRScanResponseData;
+import com.irpinnovative.qrscanner.Models.RegistrationData;
 import com.irpinnovative.qrscanner.Models.UserAcceptResponse;
 import com.irpinnovative.qrscanner.Models.UserRegistrationResponse;
 import com.irpinnovative.qrscanner.Network.ApiController;
@@ -51,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-
+//        MainViewModelFactory factory = new MainViewModelFactory(getApplication());
+//        viewModel = new ViewModelProvider(this, factory).get(MainViewModel.class);
         apiController = new ApiController(this);
         progressDialog = new ProgressDialog(this);
         binding.qrScan.setOnClickListener(v -> {
@@ -59,14 +59,15 @@ public class MainActivity extends AppCompatActivity {
         });
         binding.btnSubmit.setOnClickListener(v -> {
             if (binding.qrValue.getText().toString().equalsIgnoreCase("")){
-                Toast.makeText(this, "Scan QR Code", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Scan QR Code or Enter Mobile No.", Toast.LENGTH_SHORT).show();
+            }else if (binding.qrValue.length()<10){
+                Toast.makeText(this, "Enter valid Mobile No.", Toast.LENGTH_SHORT).show();
             }else {
                 if (NetworkUtils.isConnectedToInternet(this)) {
                     getScanData(binding.qrValue.getText().toString());
                 }else {
                     Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
         viewModel.isLoading().observe(this, new Observer<Boolean>() {
@@ -113,8 +114,32 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        if (NetworkUtils.isConnectedToInternet(this)) {
+            viewModel.getUserRegisterResponse().observe(this, new Observer<UserRegistrationResponse>() {
+                @Override
+                public void onChanged(UserRegistrationResponse userRegistrationResponse) {
+                    if(userRegistrationResponse.isStatus()){
+                        Toast.makeText(MainActivity.this, userRegistrationResponse.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+//                            viewModel.getAllUsers();
+                    }else {
+                        Toast.makeText(MainActivity.this, userRegistrationResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }else {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+        }
 
-
+        // Observe all registrations
+        viewModel.getAllRegistrations().observe(this, registrations -> {
+            if (registrations != null) {
+                // Log all users or display them
+                for (RegistrationData reg : registrations) {
+                    System.out.println("Registered User: " + reg.getFullName());
+                }
+            }
+        });
         binding.btnAddManually.setOnClickListener(v -> {
             dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -123,26 +148,6 @@ public class MainActivity extends AppCompatActivity {
             dialog.setContentView(binding1.getRoot());
             dialog.setCanceledOnTouchOutside(false);
             ImageView close = dialog.findViewById(R.id.close);
-
-
-
-
-            if (NetworkUtils.isConnectedToInternet(this)) {
-                viewModel.getUserRegisterResponse().observe(this, new Observer<UserRegistrationResponse>() {
-                    @Override
-                    public void onChanged(UserRegistrationResponse userRegistrationResponse) {
-                        if(userRegistrationResponse.isStatus()){
-                            Toast.makeText(MainActivity.this, userRegistrationResponse.getMessage().toString(), Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-//                            viewModel.getAllUsers();
-                        }else {
-                            Toast.makeText(MainActivity.this, userRegistrationResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }else {
-                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
-            }
 
 //            EditText fullName = dialog.findViewById(R.id.user_full_name);
 //            EditText mobileNo = dialog.findViewById(R.id.user_contact_no);
@@ -219,6 +224,30 @@ public class MainActivity extends AppCompatActivity {
              }
 
          } else {
+            Toast.makeText(this, "This number has not been registered!!", Toast.LENGTH_SHORT).show();
+
+//            JsonObject jsonObject = new JsonObject();
+//            jsonObject.addProperty("mobile_no",mobileNo);
+//            apiController.getQRScan(jsonObject, new AppListener.OnUserQRScanListener() {
+//                @Override
+//                public void onSuccess(QRScanResponse qrScanResponse) {
+//                    if (qrScanResponse.isStatus()){
+//                        Toast.makeText(MainActivity.this, qrScanResponse.getMessage(), Toast.LENGTH_SHORT).show();
+////                            setUserData(qrScanResponse.getUserData());
+//                        binding.qrValue.setText("");
+//                    }else {
+//                        Toast.makeText(MainActivity.this, qrScanResponse.getMessage(), Toast.LENGTH_SHORT).show();
+//                        binding.qrValue.setText("");
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(String message) {
+//                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+//                    binding.qrValue.setText("");
+//
+//                }
+//            });
 
          }
 

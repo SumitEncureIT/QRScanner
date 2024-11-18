@@ -2,10 +2,14 @@ package com.irpinnovative.qrscanner;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.zxing.Result;
+import com.irpinnovative.qrscanner.Models.CaptureAct;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -13,24 +17,26 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class ScannerViewActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+public class ScannerViewActivity extends AppCompatActivity {
 
-    ZXingScannerView zXingScannerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        zXingScannerView = new ZXingScannerView(this);
-        setContentView(zXingScannerView);
+
 
         Dexter.withContext(getApplicationContext())
                 .withPermission(Manifest.permission.CAMERA)
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                      zXingScannerView.startCamera();
+                        ScanOptions options = new ScanOptions();
+                        options.setPrompt("");
+                        options.setBeepEnabled(true);
+                        options.setOrientationLocked(true);
+                        options.setCaptureActivity(CaptureAct.class);
+                        barcodeLauncher.launch(options);
                     }
 
                     @Override
@@ -44,25 +50,23 @@ public class ScannerViewActivity extends AppCompatActivity implements ZXingScann
                     }
                 }).check();
     }
+    // Register the launcher and result handler
+    private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(),
+            result -> {
+                if(result.getContents() == null) {
+                    Toast.makeText(ScannerViewActivity.this, "Scan failed.", Toast.LENGTH_LONG).show();
+                } else {
+//                    Toast.makeText(ScannerViewActivity.this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                    MainActivity.binding.qrValue.setText(result.getContents());
+                    onBackPressed();
+                }
+            });
 
-    @Override
-    public void handleResult(Result rawResult) {
 
-        MainActivity.binding.qrValue.setText(rawResult.getText());
-        onBackPressed();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        zXingScannerView.stopCamera();
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        zXingScannerView.setResultHandler(this);
-        zXingScannerView.startCamera();
+
     }
 }
