@@ -140,6 +140,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        viewModel.getErrorMessage().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String message) {
+                if (message != null && !message.isEmpty()) {
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    if(message.equalsIgnoreCase("Data inserted successfully")){
+                        dialog.dismiss();
+                    }
+                }
+            }
+        });
+
+        binding.btnSyncRegistration.setOnClickListener(v -> {
+            if (NetworkUtils.isConnectedToInternet(this)) {
+                // Call userRegistration method from ViewModel
+                viewModel.userRegistration();
+            } else {
+                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+            }
+        });
         binding.btnAddManually.setOnClickListener(v -> {
             dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -148,37 +168,9 @@ public class MainActivity extends AppCompatActivity {
             dialog.setContentView(binding1.getRoot());
             dialog.setCanceledOnTouchOutside(false);
             ImageView close = dialog.findViewById(R.id.close);
-
-//            EditText fullName = dialog.findViewById(R.id.user_full_name);
-//            EditText mobileNo = dialog.findViewById(R.id.user_contact_no);
-//            EditText email = dialog.findViewById(R.id.user_email);
-//            Button btnRegister = dialog.findViewById(R.id.btn_register);
             close.setOnClickListener(view -> {
                 dialog.dismiss();
             });
-//            btnRegister.setOnClickListener(view -> {
-//                String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-//                if (fullName.getText().toString().equalsIgnoreCase("")){
-//                    fullName.requestFocus();
-//                    fullName.setError("Enter full name");
-//                }else if (mobileNo.getText().toString().equalsIgnoreCase("")){
-//                    mobileNo.requestFocus();
-//                    mobileNo.setError("Enter mobile no");
-//                }else if (mobileNo.getText().toString().length()<10){
-//                    mobileNo.requestFocus();
-//                    mobileNo.setError("Enter valid mobile no");
-//                }
-////                else if (email.getText().toString().equalsIgnoreCase("")){
-////                    email.requestFocus();
-////                    email.setError("Enter email id");
-////                }else if (!email.getText().toString().matches(emailPattern)){
-////                    email.requestFocus();
-////                    email.setError("Enter your valid email id");
-////                }
-//                else {
-//                    getRegister(fullName.getText().toString(),mobileNo.getText().toString(),email.getText().toString());
-//                }
-//            });
 
 
 
@@ -226,29 +218,6 @@ public class MainActivity extends AppCompatActivity {
          } else {
             Toast.makeText(this, "This number has not been registered!!", Toast.LENGTH_SHORT).show();
 
-//            JsonObject jsonObject = new JsonObject();
-//            jsonObject.addProperty("mobile_no",mobileNo);
-//            apiController.getQRScan(jsonObject, new AppListener.OnUserQRScanListener() {
-//                @Override
-//                public void onSuccess(QRScanResponse qrScanResponse) {
-//                    if (qrScanResponse.isStatus()){
-//                        Toast.makeText(MainActivity.this, qrScanResponse.getMessage(), Toast.LENGTH_SHORT).show();
-////                            setUserData(qrScanResponse.getUserData());
-//                        binding.qrValue.setText("");
-//                    }else {
-//                        Toast.makeText(MainActivity.this, qrScanResponse.getMessage(), Toast.LENGTH_SHORT).show();
-//                        binding.qrValue.setText("");
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(String message) {
-//                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-//                    binding.qrValue.setText("");
-//
-//                }
-//            });
-
          }
 
 //
@@ -285,33 +254,6 @@ public class MainActivity extends AppCompatActivity {
         dataDialog.getWindow().setGravity(Gravity.BOTTOM);
     }
 
-    private void getRegister(String name, String mobile, String email){
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("name",name);
-        jsonObject.addProperty("mobile_no",mobile);
-        jsonObject.addProperty("email_id",email);
-        Log.e("TAG", "getRegister: "+jsonObject);
-        apiController.geUserRegister(jsonObject, new AppListener.OnUserRegisterListener() {
-            @Override
-            public void onSuccess(UserRegistrationResponse userRegistrationResponse) {
-                if (userRegistrationResponse.isStatus()){
-                    dialog.dismiss();
-                    Toast.makeText(MainActivity.this, userRegistrationResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                }else {
-                    dialog.dismiss();
-                    Toast.makeText(MainActivity.this, userRegistrationResponse.getMessage(), Toast.LENGTH_SHORT).show();
-
-                }
-            }
-
-            @Override
-            public void onFailure(String message) {
-                dialog.dismiss();
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-
-            }
-        });
-    }
 
     private void getAccept(String mobileNo){
         JsonObject jsonObject = new JsonObject();
