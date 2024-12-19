@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         apiController = new ApiController(this);
         progressDialog = new ProgressDialog(this);
         binding.qrScan.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), ScannerViewActivity.class));
+            startActivity(new Intent(getApplicationContext(), CaptureAct.class));
         });
         binding.btnSubmit.setOnClickListener(v -> {
             if (binding.qrValue.getText().toString().equalsIgnoreCase("")){

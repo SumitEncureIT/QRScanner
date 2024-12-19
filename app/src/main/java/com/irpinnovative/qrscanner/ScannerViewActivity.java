@@ -7,7 +7,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.irpinnovative.qrscanner.Models.CaptureAct;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import com.karumi.dexter.Dexter;
@@ -31,12 +30,14 @@ public class ScannerViewActivity extends AppCompatActivity {
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        ScanOptions options = new ScanOptions();
-                        options.setPrompt("");
-                        options.setBeepEnabled(true);
-                        options.setOrientationLocked(true);
-                        options.setCaptureActivity(CaptureAct.class);
-                        barcodeLauncher.launch(options);
+//                        ScanOptions options = new ScanOptions();
+//                        options.setPrompt("");
+//                        options.setBeepEnabled(false);
+////                        options.setTorchEnabled(true);
+//                        options.setOrientationLocked(true);
+//                        options.setCameraId(0);
+//                        options.setCaptureActivity(CaptureAct.class);
+//                        barcodeLauncher.launch(options);
                     }
 
                     @Override
@@ -55,6 +56,7 @@ public class ScannerViewActivity extends AppCompatActivity {
             result -> {
                 if(result.getContents() == null) {
                     Toast.makeText(ScannerViewActivity.this, "Scan failed.", Toast.LENGTH_LONG).show();
+                    onBackPressed();
                 } else {
 //                    Toast.makeText(ScannerViewActivity.this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                     MainActivity.binding.qrValue.setText(result.getContents());

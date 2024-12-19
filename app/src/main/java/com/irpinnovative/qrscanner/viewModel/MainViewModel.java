@@ -135,7 +135,7 @@ public class MainViewModel extends ViewModel {
                         public void onResponse(Call<UserRegistrationResponse> call, Response<UserRegistrationResponse> response) {
                             if (response.code() == 200 && response.body() != null && response.body().isStatus()) {
                                     new Thread(() -> mGetAllUserDataDao.deleteAll(userData)).start();
-                                    errorMessage.postValue("Registration Successfully!!");
+                                    errorMessage.postValue(response.body().getMessage());
                             } else {
                                 if (response.body().getMessage().equalsIgnoreCase("Mobile no already exist")) {
                                     // If data exists on the server, delete it from the local database
